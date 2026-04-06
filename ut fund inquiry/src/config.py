@@ -16,8 +16,17 @@ TAB_2 = os.getenv("TAB_2", "Fund Master List")
 
 ISIN_COL = os.getenv("ISIN_COL", "ISIN")
 PREFIX_COL = os.getenv("PREFIX_COL", "ISIN prefix")
-FUND_NAME_COL = os.getenv("FUND_NAME_COL", "Instrument Name")
-TRAILER_FEE_COL = os.getenv("TRAILER_FEE_COL", "Trailer Fee")
+FUND_NAME_COL = os.getenv("FUND_NAME_COL", "Fund Name")
+
+TRAILER_FEE_FIXED_COL = os.getenv(
+    "TRAILER_FEE_FIXED_COL",
+    "Trailer Fee (If Fixed)",
+)
+
+TRAILER_FEE_PCT_MGMT_COL = os.getenv(
+    "TRAILER_FEE_PCT_MGMT_COL",
+    "Tralier Fee (If Percentage of Management fee)",
+)
 
 PRODUCTS_TEAM_EMAIL = os.getenv(
     "PRODUCTS_TEAM_EMAIL",
