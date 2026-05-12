@@ -25,7 +25,6 @@ def build_reply_rows(extracted_isins: list[str], master) -> tuple[list[dict], bo
     for isin in extracted_isins:
         detail = master.isin_details.get(isin)
 
-        # ISIN not found in masterlist
         if detail is None:
             rows.append(
                 {
@@ -40,7 +39,6 @@ def build_reply_rows(extracted_isins: list[str], master) -> tuple[list[dict], bo
             has_pending = True
             continue
 
-        # ISIN found in masterlist
         fund_name_raw = detail.get("fund_name", "")
         trailer_fee_fixed_raw = detail.get("trailer_fee_fixed", "")
         trailer_fee_pct_mgmt_raw = detail.get("trailer_fee_pct_mgmt", "")
@@ -78,7 +76,6 @@ def build_reply_rows(extracted_isins: list[str], master) -> tuple[list[dict], bo
         )
         has_pending = True
 
-    # sort: Yes first, pending bottom
     rows = sorted(
         rows,
         key=lambda r: (
@@ -96,7 +93,6 @@ def _build_html_table_rows(rows: list[dict]) -> str:
 
     html_rows = []
 
-    # normal rows first
     for row in non_pending_rows:
         html_rows.append(
             "<tr>"
@@ -108,7 +104,6 @@ def _build_html_table_rows(rows: list[dict]) -> str:
             "</tr>"
         )
 
-    # pending rows at bottom, merge cols 2-5 vertically
     if pending_rows:
         rowspan = len(pending_rows)
 
@@ -146,7 +141,9 @@ def build_reply_html(rows: list[dict], has_pending: bool, products_team_email: s
 
     ending = (
         '<p>&nbsp;</p>'
-        '<p>Pending manual confirmation items will be reverted once confirmed.</p>'
+        f'<p>Need to manually check with Products Team or UT Ops. '
+        f'Please forward this email to {html.escape(products_team_email)} '
+        f'with your questions and we will get back to you.</p>'
         if has_pending
         else
         f'<p>&nbsp;</p>'
@@ -197,7 +194,6 @@ def build_reply_plain(rows: list[dict], has_pending: bool, products_team_email: 
             f"{row['trailer_fee_fixed']} | {row['trailer_fee_pct_mgmt']}"
         )
 
-    # plain text cannot really merge cells, so simulate it:
     if pending_rows:
         first = pending_rows[0]
         lines.append(
@@ -210,7 +206,11 @@ def build_reply_plain(rows: list[dict], has_pending: bool, products_team_email: 
     lines.append("")
 
     if has_pending:
-        lines.append("Pending manual confirmation items will be reverted once confirmed.")
+        lines.append(
+            f"Need to manually check with Products Team or UT Ops. "
+            f"Please forward this email to {products_team_email} "
+            f"with your questions and we will get back to you."
+        )
     else:
         lines.append(
             f"For any queries, please contact the Products Team {products_team_email}"
